@@ -1,8 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import styles from "../CSS/cartitem.module.css"
+import axios from 'axios'
+import { productBase } from './data'
+
+
+
 
 function Cartitem(props) {
+
+  const [currentUser] = useState(localStorage.getItem('currentUser')||null)
+
+  const handleRemoveItem = ()=>{
+    axios.delete(`${productBase}/${currentUser}/${props.title}/delete-product-from-cart`).then((responces)=>{
+        console.log(responces)
+    })
+  }
+
   return (
     <div className={styles.cartItemContainer}>
       <div className={styles.imageContainer}>
@@ -20,7 +34,7 @@ function Cartitem(props) {
         <div className={styles.cartItemButtom}>
             <div className={styles.addItem}>+</div>
             <input type='numbers' value={props.quantity}></input>
-            <div className={styles.removeItem}>-</div>
+            <div onClick={handleRemoveItem} className={styles.removeItem}>-</div>
           </div>
       </div>
     </div>

@@ -5,10 +5,19 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import "../CSS/productitem.css"
 import axios from 'axios';
 import { productBase } from './data';
+import { useNavigate } from 'react-router-dom';
 
-function ProductItem({item}) {
+
+function ProductItem(props) {
 
     const [currentUser] = useState(localStorage.getItem('currentUser')||null)
+
+    const navigate = useNavigate()
+
+    const GoToSinglePage = ()=>{
+        
+        navigate('/productitem', { state: { user: props.item } });
+    }
 
     const AddToCart =()=>{
 
@@ -16,20 +25,23 @@ function ProductItem({item}) {
             quantity: 1, // Include authorization header if needed
           };
         
-        axios.post(`${productBase}/${currentUser}/${item.ptitle}/addProducts-to-cart`,{
+        axios.post(`${productBase}/${currentUser}/${props.item.ptitle}/addProducts-to-cart`,{
             headers: headers
         }).then(response => {
             console.log(response.data);
+            props.notification()
             })
             .catch(error => {
+            props.outOfStock()
             console.error('error:', error);
             });
     }
 
   return (
     <div className='product-container'>
-        <div className='product-img'>
-        <img src={item.pimageURL} alt='img'></img>
+   
+        <div  className='product-img'>
+        <img src={props.item.pimageURL} alt='img'></img>
         <div className='product-icon'>
             <div onClick={AddToCart} className='icon'>
                 <ShoppingCartOutlinedIcon className='icon-item' />
@@ -42,10 +54,10 @@ function ProductItem({item}) {
             </div>
         </div>
         </div>
-        <div className='product-info'>
-            <a href='/' className='product-title'>{item.ptitle}</a>
+        <div className='product-info' onClick={GoToSinglePage}>
+            <a onClick={GoToSinglePage} className='product-title'>{props.item.ptitle}</a>
             {/* <a href='/' className='rating'>{item.rating}</a> */}
-            <a href='/' className='price'>{item.pprice}</a>
+            <a  className='price'>₹{props.item.pprice}</a>
         </div>
     </div>
   )

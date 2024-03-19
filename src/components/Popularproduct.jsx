@@ -3,12 +3,27 @@ import ProductItem from './ProductItem'
 import "../CSS/popularproduct.css"
 import { popularProducts } from './data'
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Popularproduct() {
 
 
   const [token, setToken] = useState(localStorage.getItem('authToken') || null);
   const [ProductData, setProductData] = useState([])
+
+
+  const notify = () => toast.success("Added to cart", {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    // transition: Bounce
+    });
 
 
     useEffect(() => {
@@ -36,10 +51,23 @@ function Popularproduct() {
 
   return (
     <div className='popular-product-container'>
+    <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        // transition: Bounce
+        />
     <h3>PopularProducts</h3>
     <div className='popular-product-section'>
     {ProductData.map((item)=>{
-        return <ProductItem item={item} key={item.id} />
+        return <ProductItem item={item} key={item.id} notification={notify}/>
     })}
     </div>
     <div className='all-products'>

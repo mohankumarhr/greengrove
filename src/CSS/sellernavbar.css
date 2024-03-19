@@ -60,6 +60,10 @@
     content: 'Buy';
 }
 
+.dropdown-menu-profile ul li a{
+    color: black;
+}
+
 .sell-btn input{
     display: none;
 }

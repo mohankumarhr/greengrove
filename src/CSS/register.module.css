@@ -97,3 +97,11 @@ background-color: white;
     color: white;
     text-decoration: none;
 }
+.incorrect{
+    color: red;
+    font-size: 15px;
+    text-align: center;
+  }
+
+  
+  

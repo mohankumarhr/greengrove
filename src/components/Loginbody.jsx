@@ -5,11 +5,14 @@ import styles from "../CSS/register.module.css"
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { baseUrl } from './data'
+import Loader from './Loader'
 
 
 function Loginbody() {
 
   const navigate = useNavigate()
+
+  const [loading, setLoading] = useState(false)
 
   const [inputValues, setInputValues] = useState({
       userName:'',
@@ -33,7 +36,7 @@ const [isForgot, setForgot] = useState(false)
 
   const handleLogin = async (e) => {
     e.preventDefault()
-     
+     setLoading(true)
     console.log('Login Details', inputValues);
    
     axios.post(`${baseUrl}/user/auth/login-user`, inputValues, 
@@ -41,6 +44,7 @@ const [isForgot, setForgot] = useState(false)
     )
       .then(response => {
         // Handle the response
+        setLoading(false)
         console.log(JSON.stringify(response.data));
         const stringData = JSON.stringify(response.data)
         const data = JSON.parse(stringData)
@@ -59,6 +63,7 @@ const [isForgot, setForgot] = useState(false)
       })
       .catch(error => {
         // Handle errors
+        setLoading(false)
         setIsLogin(false)
         console.error('Error:', error);
       });
@@ -144,14 +149,14 @@ const [isForgot, setForgot] = useState(false)
 
   return (
     <div className={style.loginMain}>
+    {loading&&<Loader />}
       <div className={style.loginContainer}>
-      
         <div className={style.loginForm}>
         <h3>Sign In</h3>
           {!isForgot&&<form>
             <div className={isActive&&style.toggleClass}>
             <div className={styles.registerInputBox}>
-            {!isLogin&&<div className='wrong'>incorrect username or password</div>}
+            {!isLogin&&<div className={style.incorrect}>incorrect username or password</div>}
               <input
                required
                 type="text"

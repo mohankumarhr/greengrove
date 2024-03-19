@@ -49,6 +49,11 @@
     cursor: pointer;
 }
 
+.addItem.disableBtn{
+    background-color: #6da8202e;
+}
+
+
 @media (max-width:600px){
     .imageContainer{
         width: 175px;

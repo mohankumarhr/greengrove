@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import "../CSS/navbar.css"
 import { Badge } from '@mui/material'
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
@@ -8,6 +8,7 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { baseUrl } from './data';
+import { productBase } from './data';
 
 function Navbar() {
 
@@ -16,13 +17,45 @@ function Navbar() {
 
     const [dropdown, setDopdown] = useState(false)
 
-
-    // ************************** connecting to backed *******************************
+    const [totalCartItems, setTotalCartItems] = useState(0);
 
     const [token] = useState(localStorage.getItem('authToken') || null);
     const [currentUser] = useState(localStorage.getItem('currentUser')||null)
+
+
+    useEffect( () =>{
+        const headers = {
+            Authorization: `Bearer ${token}`, // Include authorization header if needed
+          };
+          
+            console.log(currentUser)
+            axios.get(`${baseUrl}/user/get-CurrentUser`,
+              {
+                headers: headers,
+              }
+            ).then((responces)=>{console.log(responces.status)}
+            ).catch(error => {
+                localStorage.removeItem("authToken")
+                localStorage.removeItem("currentUser")
+               console.log("hi")
+              console.error('error:', error);
+         });
+
+         axios.get(`${productBase}/${currentUser}/get-user-cart`).then(
+            (responces)=>{ 
+              setTotalCartItems(responces.data.itemQuantity.length)
+            }
+          ).catch((error)=>{
+            console.log(error)
+          })
+
+    },[token])
+
+    // ************************** connecting to backed *******************************
+
     
-    const handleLogout = async (e)=>{
+    
+    const handleLogout = async ()=>{
         const headers = {
             Authorization: `Bearer ${token}`, // Include authorization header if needed
           };
@@ -110,7 +143,7 @@ function Navbar() {
                     </div>
                     <div className='nav-sections logo-container'><div onClick={hadleMenu} className='menu-icon' ><MenuIcon /></div>Green Grove<div className='phone-cart'>
                     <Link to={'/cart'}>
-                    <Badge badgeContent={10} color="primary">
+                    <Badge badgeContent={totalCartItems} color="primary">
                         <ShoppingCartOutlinedIcon color="action" />
                     </Badge>
                     </Link></div></div>
@@ -149,7 +182,7 @@ function Navbar() {
                                 {!token&&<li><Link to={"/login"}>Login</Link></li>}
                                 {!token&&<li><Link to={"/register"}>Register</Link></li>}
                                 <li className='desktop-badge'><Link to={"/cart"}>
-                                <Badge badgeContent={4} color="primary">
+                                <Badge badgeContent={totalCartItems} color="primary">
                                     <ShoppingCartOutlinedIcon />
                                 </Badge>
                                 </Link></li>

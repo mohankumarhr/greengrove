@@ -5,9 +5,11 @@ import Cartitem from './Cartitem'
 import AddressList from './AddressList'
 import axios from 'axios'
 import { productBase } from './data'
+import { useNavigate } from 'react-router-dom'
 
 function Cartlist() {
 
+ const navigate = useNavigate()
 
   const [showAddressList, setAddressList] = useState(false)
 
@@ -17,10 +19,27 @@ function Cartlist() {
 
   const [cartItems , setCartItems] = useState([])
 
+  const [totalCost, setTotalCost] = useState(0)
+
+
   const handleAddressList = (bool, item)=>{
-    setAddressList(bool)
-    setAddress(item)
+    if (item=="undefined") {
+      console.log("hi")
+    }
+      setAddressList(bool)
+      setAddress(item)
+      console.log(item)
     
+}
+
+
+const cartChanges = ()=>{
+  axios.get(`${productBase}/${currentUser}/get-user-cart`).then(
+    (responces)=>{
+      setCartItems(responces.data.itemQuantity)
+      setTotalCost(responces.data.totalCost)
+      console.log(responces.data)
+    })
 }
 
 
@@ -29,9 +48,12 @@ useEffect(()=>{
   axios.get(`${productBase}/${currentUser}/get-user-cart`).then(
     (responces)=>{
       setCartItems(responces.data.itemQuantity)
+      setTotalCost(responces.data.totalCost)
       console.log(responces.data)
     }
-  )
+  ).catch(()=>{
+    navigate("/login")
+  })
   
 
 },[currentUser])
@@ -55,6 +77,9 @@ useEffect(()=>{
             price = {item.product.pprice}
             category = {item.product.category}
             quantity = {item.quantity}
+            cartchanges = {cartChanges}
+            maxquantity = {item.product.quantity}
+            showAdd = {item.quantity>=item.product.quantity?false:true}
           />
          })}
         </div>
@@ -77,15 +102,15 @@ useEffect(()=>{
             </div>
             <div>
               <p>Price</p>
-              <p>5600</p>
+              <p>{totalCost}</p>
             </div>
             <div>
               <p>Delivery Charges</p>
-              <p>-2000</p>
+              <p>50</p>
             </div>
             <div className={styles.finalPrice}> 
               <p>Total Amount</p>
-              <p>3600</p>
+              <p>{totalCost+50}</p>
             </div>
             <button>Place Order</button>
           </div>

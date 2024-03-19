@@ -9,7 +9,7 @@ function Footer() {
     <div className='footer-section'>
         <div className='newsletter-conatainer'>
             <h3>Newsletter</h3>
-            <p>Get the update from yor favotrate products</p>
+            <p>Get the update from yor favourite products</p>
             <div className='newsletter-input'>
             <input type='text' placeholder='subscribe newsletter..'></input>
             <button>SUBSCRIBE</button>

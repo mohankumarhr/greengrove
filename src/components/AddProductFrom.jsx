@@ -5,11 +5,14 @@ import Input from './Input'
 import axios from 'axios'
 import { productBase } from './data'
 import { useNavigate } from 'react-router-dom'
+import Loader from './Loader'
 
 
 function AddProductFrom() {
 
     const navigate = useNavigate()
+
+    const [loading, setLoading] = useState(false)
 
     const [files, setFiles] = useState([])
 
@@ -27,7 +30,7 @@ function AddProductFrom() {
     })
 
 
-    const options = ["House Plant", "Office Plant", "Garden Plant"]
+    const options = ["House Plant", "Office Plant", "Garden Plant","Auspicious Plnat"]
 
     const features = ['low Mantainence', "Attractive Foliage", "Pollinator Frieldly", "frangnance", "longevity", "Adaptable", "less Watring"]
 
@@ -65,6 +68,7 @@ function AddProductFrom() {
 
 
         console.log('Product Details:', formateDetails);
+        setLoading(true)
         axios.post(`${productBase}/seller/${currentUser}/upload-product`, formateDetails, 
         )
           .then(response => {
@@ -79,10 +83,12 @@ function AddProductFrom() {
                 }
                 })
                 .then(response => {
+                    setLoading(false)
                 console.log(response.data);
                 
                 })
                 .catch(error => {
+                    setLoading(false)
                 console.error('Error uploading image:', error);
                 
                 });
@@ -90,6 +96,7 @@ function AddProductFrom() {
           })
           .catch(error => {
             // Handle errors
+            setLoading(false)
             console.error('Error:', error);
           });
 
@@ -147,6 +154,7 @@ function AddProductFrom() {
 
     return (
         <div className={styles.addProductContainer}>
+        {loading&&<Loader />}
             <h3>Add Product</h3>
             <div className={styles.addProductFrom}>
             <div className={styles.addProductImgContainer}>

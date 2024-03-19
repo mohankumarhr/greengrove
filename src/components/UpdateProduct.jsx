@@ -5,8 +5,11 @@ import Input from './Input'
 import axios from 'axios'
 import { productBase } from './data'
 import { useLocation, useNavigate } from 'react-router-dom';
+import Loader from './Loader'
 
 function UpdateProduct(props) {
+
+    const [loading, setLoading] = useState(false)
 
     const location = useLocation();
 
@@ -75,6 +78,7 @@ function UpdateProduct(props) {
 
 
         console.log('Product Details:', formateDetails);
+        setLoading(true)
         axios.post(`${productBase}/seller/${currentUser}/update-product/${user.ptitle}`, formateDetails, 
         )
           .then(response => {
@@ -91,18 +95,22 @@ function UpdateProduct(props) {
                 }
                 })
                 .then(response => {
+                setLoading(false)
                 console.log(response.data);
                 
                 })
                 .catch(error => {
+                setLoading(false)
                 console.error('Error uploading image:', error);
                 
                 });
             }
+            setLoading(false)
             navigate('/seller/dashbord')
           })
           .catch(error => {
             // Handle errors
+            setLoading(false)
             console.error('Error:', error);
           });
 
@@ -186,6 +194,7 @@ function UpdateProduct(props) {
 
   return (
     <div className={styles.addProductContainer}>
+    {loading&&<Loader />}
     <h3>Update Product</h3>
     <div className={styles.addProductFrom}>
    {isImgChanged&&<div className={styles.addProductImgContainer}>
@@ -240,7 +249,7 @@ function UpdateProduct(props) {
             <label>Quantity</label>
             <input onChange={handleChange} name='quantity' value={productDetails.quantity} type='number'></input>
         </div>
-        <button onClick={uploadProduct}>Add Product</button>
+        <button onClick={uploadProduct}>Update Product</button>
         </div>
     </div>
 </div>

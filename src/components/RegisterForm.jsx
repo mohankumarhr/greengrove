@@ -5,9 +5,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { baseUrl } from './data'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import Loader from './Loader'
 
 function RegisterForm() {
 
+  const [loading, setLoading] = useState(false)
 
   const [registerValues, setRegisterValues] = useState({
     userName:"",
@@ -25,22 +27,28 @@ function RegisterForm() {
 
   const [signUp2, setSignUp2] = useState(false)
 
+  const [isIncorrect, setIsIncorrect] = useState(false)
+
   // ****************************************************************************************
 
 
   const handleRegister = async (e)=>{
     e.preventDefault();
+    setLoading(true)
     console.log('Admin Details:', registerValues);
     axios.post(`${baseUrl}/user/auth/create-user`, registerValues, 
     )
       .then(response => {
         // Handle the response
+        setLoading(false)
         console.log(response.data);
         setVerifyLink(true)
       })
       .catch(error => {
         // Handle errors
+        setLoading(false)
         setIsLogin(false)
+        setIsIncorrect(true)
         console.error('Error:', error);
       });
   }
@@ -72,10 +80,13 @@ function RegisterForm() {
     setSignUp2(false)
   }
 
+
   return (
     <div className={styles.registerFormContainer}>
+    {loading&&<Loader />}
     {!verifyLink&&<form className={styles.registerForm}>
     <h3>Sign Up</h3>
+    {isIncorrect&&<div className={styles.incorrect}>Email or Username already exists</div>}
     {!signUp2&&<div className={styles.registerSubFrom}>
     <div className={styles.registerInputBox}>
       <input 
